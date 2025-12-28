@@ -130,76 +130,76 @@ pnpm lint
 
 ## Deployment
 
-### GitHub Pages (Recommended)
+### Vercel (Recommended)
 
-This project is configured for automatic deployment to GitHub Pages via GitHub Actions.
+This project is optimized for deployment on [Vercel](https://vercel.com), which provides zero-config deployment for Next.js applications.
 
-#### Initial Setup
+#### Deploy to Vercel
 
-**Important:** You must enable GitHub Pages in your repository settings before the workflow can deploy.
-
-1. **Enable GitHub Pages in your repository:**
-
-   - Go to your repository on GitHub
-   - Navigate to **Settings** → **Pages** (in the left sidebar)
-   - Under **Build and deployment** → **Source**, select **GitHub Actions**
-   - If you don't see the Pages option, make sure you have admin/owner permissions on the repository
-   - The workflow will attempt to enable Pages automatically, but manual setup is recommended
-
-2. **Push your code:**
+1. **Install Vercel CLI** (optional, for local deployment):
 
    ```bash
-   git add .
-   git commit -m "Configure GitHub Pages deployment"
-   git push origin main
+   npm i -g vercel
    ```
 
-3. **Automatic Deployment:**
-   - The GitHub Actions workflow will automatically build and deploy your site on every push to `main` or `master` branch
-   - The workflow is located at `.github/workflows/deploy.yml`
-   - After the first successful deployment, your site will be available at:
-     - `https://<username>.github.io/<repository-name>/` (for project repositories)
-     - `https://<username>.github.io/` (for user/organization pages)
+2. **Deploy via Vercel Dashboard:**
 
-**Troubleshooting:**
+   - Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+   - Go to [vercel.com/new](https://vercel.com/new)
+   - Import your repository
+   - Vercel will automatically detect Next.js and configure the build settings
+   - Click "Deploy"
 
-- If you see "Get Pages site failed" error, ensure Pages is enabled in repository Settings → Pages
-- Make sure you have admin/owner permissions on the repository
-- The first deployment may take a few minutes to complete
+3. **Deploy via CLI:**
 
-#### Manual Build and Test Locally
+   ```bash
+   vercel
+   ```
 
-To test the static export locally before deploying:
+4. **Build Settings (Auto-detected):**
+   - **Framework Preset:** Next.js
+   - **Build Command:** `pnpm run build`
+   - **Output Directory:** `out`
+   - **Install Command:** `pnpm install`
+
+#### Environment Variables
+
+If you need to add environment variables:
+
+- Go to your project settings on Vercel
+- Navigate to **Settings** → **Environment Variables**
+- Add your variables and redeploy
+
+### Building for Production
+
+Create an optimized production build:
+
+```bash
+pnpm run build
+```
+
+The static files will be generated in the `./out` directory.
+
+### Testing the Build Locally
+
+To test the static export locally:
 
 ```bash
 # Build the static site
 pnpm run export
 
-# The static files will be in the ./out directory
-# You can serve them with any static file server:
+# Serve the static files
 npx serve out
 ```
 
-#### Configuration for Subdirectory Deployment
-
-If your repository name is not `username.github.io`, you'll need to configure the base path:
-
-1. Open `next.config.ts`
-2. Uncomment and update the `basePath` line:
-   ```typescript
-   basePath: process.env.NODE_ENV === 'production' ? '/your-repo-name' : '',
-   trailingSlash: true,
-   ```
-
 ### Other Deployment Options
 
-The application is also compatible with other platforms that support Next.js, such as:
+The application is also compatible with other platforms that support Next.js static exports:
 
-- [Vercel Platform](https://vercel.com/new) - Zero-config deployment
-- Netlify
-- AWS Amplify
-- Docker containers
-- Any Node.js hosting service
+- **Netlify** - Import your Git repository, build command: `pnpm run build`, publish directory: `out`
+- **AWS Amplify** - Connect your repository, build settings: `pnpm run build`, output directory: `out`
+- **Cloudflare Pages** - Connect Git, build command: `pnpm run build`, build output directory: `out`
+- **Any static file hosting service** - Upload the contents of the `out` directory
 
 ## License
 
