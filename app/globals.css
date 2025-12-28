@@ -113,4 +113,27 @@
       min-width: 44px;
     }
   }
+  
+  /* Dynamic paragraph width based on viewport */
+  .paragraph-container {
+    max-width: var(--paragraph-width, 100%);
+  }
+  
+  /* Loading screen styles */
+  .loading-background {
+    background: linear-gradient(to bottom right, #1a1a1a, #2a2a2a, #1a1a1a);
+  }
+  
+  .loading-spinner-reverse {
+    animation: spin-reverse 1.5s linear infinite;
+  }
+  
+  @keyframes spin-reverse {
+    from {
+      transform: rotate(360deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
 }
