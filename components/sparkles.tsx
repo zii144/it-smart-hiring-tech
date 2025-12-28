@@ -1,8 +1,8 @@
 "use client";
-import { useCallback, useMemo, useEffect, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import Particles from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-import type { Engine, ISourceOptions } from "@tsparticles/engine";
+import type { ISourceOptions } from "@tsparticles/engine";
 
 interface SparklesProps {
   className?: string;
@@ -39,8 +39,11 @@ export function Sparkles({
   background = "transparent",
   options = {},
 }: SparklesProps) {
-  const particlesInit = useCallback(async (engine: Engine) => {
-    await loadSlim(engine);
+  const particlesInit = useCallback(async (container: any) => {
+    // Initialize the engine with slim preset
+    if (container?.engine) {
+      await loadSlim(container.engine);
+    }
   }, []);
 
   const finalSize = useMemo(() => {
@@ -64,15 +67,10 @@ export function Sparkles({
     return opacity;
   }, [opacity, minOpacity]);
 
-  const directionMap: Record<string, any> = {
-    top: { x: 0, y: -1 },
-    bottom: { x: 0, y: 1 },
-    left: { x: -1, y: 0 },
-    right: { x: 1, y: 0 },
-    "": { x: 0, y: 0 },
-  };
-
-  const moveDirection = directionMap[direction] || directionMap[""];
+  // Ensure direction is a valid type for tsparticles
+  const validDirection = direction && ["top", "bottom", "left", "right", "none"].includes(direction)
+    ? (direction as "top" | "bottom" | "left" | "right" | "none")
+    : "none";
 
   const particlesOptions: ISourceOptions = useMemo(
     () => ({
@@ -118,7 +116,7 @@ export function Sparkles({
         move: {
           enable: true,
           speed: typeof finalSpeed === "object" ? finalSpeed : { min: finalSpeed * 0.5, max: finalSpeed },
-          direction: direction || "none",
+          direction: validDirection,
           random: true,
           straight: false,
           outModes: {
@@ -149,7 +147,7 @@ export function Sparkles({
       speed,
       minSpeed,
       color,
-      direction,
+      validDirection,
       opacity,
       minOpacity,
       opacitySpeed,
@@ -168,7 +166,7 @@ export function Sparkles({
   return (
     <Particles
       id="tsparticles-sparkles"
-      init={particlesInit}
+      particlesLoaded={particlesInit}
       options={particlesOptions}
       className={className}
     />
