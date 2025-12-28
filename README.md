@@ -136,11 +136,15 @@ This project is configured for automatic deployment to GitHub Pages via GitHub A
 
 #### Initial Setup
 
+**Important:** You must enable GitHub Pages in your repository settings before the workflow can deploy.
+
 1. **Enable GitHub Pages in your repository:**
 
    - Go to your repository on GitHub
-   - Navigate to **Settings** → **Pages**
-   - Under **Source**, select **GitHub Actions**
+   - Navigate to **Settings** → **Pages** (in the left sidebar)
+   - Under **Build and deployment** → **Source**, select **GitHub Actions**
+   - If you don't see the Pages option, make sure you have admin/owner permissions on the repository
+   - The workflow will attempt to enable Pages automatically, but manual setup is recommended
 
 2. **Push your code:**
 
@@ -153,9 +157,15 @@ This project is configured for automatic deployment to GitHub Pages via GitHub A
 3. **Automatic Deployment:**
    - The GitHub Actions workflow will automatically build and deploy your site on every push to `main` or `master` branch
    - The workflow is located at `.github/workflows/deploy.yml`
-   - After the first deployment, your site will be available at:
+   - After the first successful deployment, your site will be available at:
      - `https://<username>.github.io/<repository-name>/` (for project repositories)
      - `https://<username>.github.io/` (for user/organization pages)
+
+**Troubleshooting:**
+
+- If you see "Get Pages site failed" error, ensure Pages is enabled in repository Settings → Pages
+- Make sure you have admin/owner permissions on the repository
+- The first deployment may take a few minutes to complete
 
 #### Manual Build and Test Locally
 
