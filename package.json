@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --webpack -p 4500",
     "build": "next build",
+    "postbuild": "node scripts/create-routes-manifest.js",
     "export": "next build",
     "start": "next start",
     "lint": "eslint",
