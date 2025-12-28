@@ -1,13 +1,15 @@
 "use client";
 import ScrollText from "@/components/ui/scroll-text";
-import MotionDrawerNav from "@/components/MotionDrawerNav";
-import SectionMarquee from "@/components/SectionMarquee";
-import LoadingScreen from "@/components/LoadingScreen";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RoleSection from "@/components/RoleSection";
-import ShaderBackground from "@/components/ShaderBackground";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
+
+// Lazy load heavy components to improve FCP
+const MotionDrawerNav = lazy(() => import("@/components/MotionDrawerNav"));
+const SectionMarquee = lazy(() => import("@/components/SectionMarquee"));
+const ShaderBackground = lazy(() => import("@/components/ShaderBackground"));
+const LoadingScreen = lazy(() => import("@/components/LoadingScreen"));
 
 // Role data configuration
 const roles = [
@@ -89,8 +91,6 @@ export default function Home() {
     // Only run on client side
     if (typeof window === "undefined") return;
 
-    setIsMounted(true);
-
     // Calculate optimal paragraph width based on device width
     const calculateParagraphWidth = () => {
       if (typeof window === "undefined") return;
@@ -128,27 +128,27 @@ export default function Home() {
       updatePixelDensity();
     };
 
-    // Initialize values
+    // Initialize values immediately for FCP
     calculateParagraphWidth();
     updatePixelDensity();
 
-    // Wait for components to load before hiding loading screen
-    // Use a shorter timeout and ensure it always completes
-    const loadingTimer = setTimeout(() => {
+    // Hide loading screen immediately after initial render (improves FCP)
+    // Use requestIdleCallback for better performance, fallback to setTimeout
+    const hideLoading = () => {
       setIsLoading(false);
-    }, 1000); // Reduced from 1500ms for faster initial load
+      setIsMounted(true); // Mount heavy components after initial render
+    };
 
-    // Fallback: ensure loading screen hides even if something goes wrong
-    const fallbackTimer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    if (typeof window.requestIdleCallback !== "undefined") {
+      window.requestIdleCallback(hideLoading, { timeout: 100 });
+    } else {
+      setTimeout(hideLoading, 0);
+    }
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      clearTimeout(loadingTimer);
-      clearTimeout(fallbackTimer);
     };
   }, []);
 
@@ -157,23 +157,17 @@ export default function Home() {
       className="relative"
       style={{ "--paragraph-width": paragraphWidth } as React.CSSProperties}
     >
-      {/* Loading Screen */}
-      {isLoading && <LoadingScreen />}
+      {/* Loading Screen - Only show briefly if needed */}
+      {isLoading && (
+        <Suspense fallback={null}>
+          <LoadingScreen />
+        </Suspense>
+      )}
 
-      <MotionDrawerNav />
-
-      {/* Dynamic Marquee - Changes based on viewing section */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 pointer-events-none">
-        <SectionMarquee />
-      </div>
-
-      {/* Shader Background */}
-      {isMounted && <ShaderBackground pixelDensity={pixelDensity} />}
-
-      {/* Header */}
+      {/* Header - Critical content, load immediately */}
       <Header />
 
-      {/* Role Sections */}
+      {/* Role Sections - Critical content, load immediately */}
       {roles.map((role) => (
         <RoleSection
           key={role.id}
@@ -208,8 +202,29 @@ export default function Home() {
         </RoleSection>
       ))}
 
-      {/* Footer */}
+      {/* Footer - Critical content, load immediately */}
       <Footer />
+
+      {/* Non-critical components - Lazy load after initial render */}
+      <Suspense fallback={null}>
+        <MotionDrawerNav />
+      </Suspense>
+
+      {/* Dynamic Marquee - Load after FCP */}
+      {isMounted && (
+        <div className="fixed bottom-0 left-0 right-0 z-20 pointer-events-none">
+          <Suspense fallback={null}>
+            <SectionMarquee />
+          </Suspense>
+        </div>
+      )}
+
+      {/* Shader Background - Load last, after all critical content */}
+      {isMounted && (
+        <Suspense fallback={null}>
+          <ShaderBackground pixelDensity={pixelDensity} />
+        </Suspense>
+      )}
     </div>
   );
 }
