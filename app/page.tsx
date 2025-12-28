@@ -86,15 +86,14 @@ export default function Home() {
   const [paragraphWidth, setParagraphWidth] = useState<string>("100%");
 
   useEffect(() => {
-    setIsMounted(true);
+    // Only run on client side
+    if (typeof window === "undefined") return;
 
-    // Wait for components to load before hiding loading screen
-    const loadingTimer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500); // Give time for ShaderGradient and other components to initialize
+    setIsMounted(true);
 
     // Calculate optimal paragraph width based on device width
     const calculateParagraphWidth = () => {
+      if (typeof window === "undefined") return;
       const width = window.innerWidth;
       let calculatedWidth: string;
 
@@ -120,6 +119,7 @@ export default function Home() {
 
     // Reduce pixel density on mobile for better performance
     const updatePixelDensity = () => {
+      if (typeof window === "undefined") return;
       setPixelDensity(window.innerWidth < 768 ? 0.75 : 1);
     };
 
@@ -128,12 +128,27 @@ export default function Home() {
       updatePixelDensity();
     };
 
+    // Initialize values
     calculateParagraphWidth();
     updatePixelDensity();
+
+    // Wait for components to load before hiding loading screen
+    // Use a shorter timeout and ensure it always completes
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000); // Reduced from 1500ms for faster initial load
+
+    // Fallback: ensure loading screen hides even if something goes wrong
+    const fallbackTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
     window.addEventListener("resize", handleResize);
+
     return () => {
       window.removeEventListener("resize", handleResize);
       clearTimeout(loadingTimer);
+      clearTimeout(fallbackTimer);
     };
   }, []);
 
