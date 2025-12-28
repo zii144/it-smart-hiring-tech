@@ -36,18 +36,18 @@ function MotionDrawerNav() {
       width={300}
       className="text-white"
       backgroundColor="#1a1a1a"
-      contentClassName="bg-[#1a1a1a]"
+      contentClassName="bg-[#1a1a1a] sm:max-w-[300px] max-w-[85vw]"
       isOpen={isOpen}
       onToggle={setIsOpen}
     >
       <nav className="space-y-2">
-        <h2 className="text-xl font-bold mb-4 text-white">職缺選單</h2>
+        <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-white">職缺選單</h2>
         {data.map((item, index) => (
           <a
             key={index}
             href={item.url}
             onClick={(e) => handleAnchorClick(e, item.url)}
-            className="block p-3 hover:bg-gray-800 rounded-sm transition-colors duration-200 text-white hover:text-gray-200 cursor-pointer"
+            className="block p-3 sm:p-4 text-sm sm:text-base hover:bg-gray-800 rounded-sm transition-colors duration-200 text-white hover:text-gray-200 cursor-pointer"
           >
             {item.name}
           </a>

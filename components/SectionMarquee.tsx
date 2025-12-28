@@ -38,7 +38,7 @@ export default function SectionMarquee() {
             duration: 0.6,
             ease: [0.4, 0, 0.2, 1],
           }}
-          className="h-24 md:h-32 grid place-content-center bg-black/20 backdrop-blur-sm border-t border-white/10 relative overflow-hidden"
+          className="h-20 sm:h-24 md:h-32 grid place-content-center bg-black/20 backdrop-blur-sm border-t border-white/10 relative overflow-hidden"
         >
           <AnimatePresence>
             <motion.div
@@ -55,7 +55,7 @@ export default function SectionMarquee() {
               <ScrollBaseAnimation
                 baseVelocity={3}
                 scrollDependent={true}
-                className="font-bold tracking-[-0.07em] leading-[90%] text-white text-2xl md:text-4xl lg:text-5xl [text-shadow:0_2px_4px_rgba(0,0,0,0.3)]"
+                className="font-bold tracking-[-0.07em] leading-[90%] text-white text-base sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl [text-shadow:0_2px_4px_rgba(0,0,0,0.3)]"
               >
                 {displayText}
               </ScrollBaseAnimation>

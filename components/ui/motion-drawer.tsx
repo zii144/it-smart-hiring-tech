@@ -193,15 +193,16 @@ const MotionDrawer: React.FC<SideMenuProps> = ({
     <>
       {showToggleButton && (
         <motion.button
-          className={`fixed z-50 text-white cursor-pointer ${openButtonPositionClasses}`}
+          className={`fixed z-50 text-white cursor-pointer p-2 sm:p-3 ${openButtonPositionClasses}`}
           onClick={() => setIsOpen(true)}
           variants={buttonVariants}
           animate={isOpen ? 'open' : 'closed'}
           transition={animationConfig}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          aria-label="Open menu"
         >
-          <Menu />
+          <Menu size={24} className="sm:w-6 sm:h-6" />
           {/* Open */}
         </motion.button>
       )}
@@ -228,7 +229,8 @@ const MotionDrawer: React.FC<SideMenuProps> = ({
               style={{
                 backgroundColor,
                 width: `${width}px`,
-                padding: '60px 30px 30px 30px',
+                maxWidth: '85vw',
+                padding: '60px 20px 30px 20px',
                 boxSizing: 'border-box',
               }}
               drag={enableDrag ? 'x' : false}
@@ -245,13 +247,14 @@ const MotionDrawer: React.FC<SideMenuProps> = ({
               {/* Close Button */}
               {showToggleButton && (
                 <motion.button
-                  className='absolute top-2 right-4 p-2 text-white cursor-pointer'
+                  className='absolute top-2 right-2 sm:right-4 p-2 text-white cursor-pointer'
                   onClick={() => setIsOpen(false)}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ duration: 0.2 }}
+                  aria-label="Close menu"
                 >
-                  <X size={20} /> {/* Close */}
+                  <X size={20} className="sm:w-5 sm:h-5" /> {/* Close */}
                 </motion.button>
               )}
 
