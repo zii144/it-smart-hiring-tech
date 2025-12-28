@@ -59,8 +59,7 @@ This is a Next.js-based single-page application featuring an immersive user expe
 │   ├── MotionDrawerNav.tsx
 │   ├── RoleSection.tsx
 │   ├── SectionMarquee.tsx
-│   ├── ShaderBackground.tsx
-│   └── sparkles.tsx
+│   └── ShaderBackground.tsx
 ├── hooks/                # Custom React hooks
 │   └── useSectionInView.ts
 ├── lib/                  # Utility functions
