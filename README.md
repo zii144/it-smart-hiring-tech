@@ -131,14 +131,62 @@ pnpm lint
 
 ## Deployment
 
-The easiest way to deploy this Next.js application is using [Vercel Platform](https://vercel.com/new):
+### GitHub Pages (Recommended)
 
-1. Push your code to a Git repository
-2. Import your repository on Vercel
-3. Vercel will automatically detect Next.js and configure the build settings
+This project is configured for automatic deployment to GitHub Pages via GitHub Actions.
+
+#### Initial Setup
+
+1. **Enable GitHub Pages in your repository:**
+
+   - Go to your repository on GitHub
+   - Navigate to **Settings** → **Pages**
+   - Under **Source**, select **GitHub Actions**
+
+2. **Push your code:**
+
+   ```bash
+   git add .
+   git commit -m "Configure GitHub Pages deployment"
+   git push origin main
+   ```
+
+3. **Automatic Deployment:**
+   - The GitHub Actions workflow will automatically build and deploy your site on every push to `main` or `master` branch
+   - The workflow is located at `.github/workflows/deploy.yml`
+   - After the first deployment, your site will be available at:
+     - `https://<username>.github.io/<repository-name>/` (for project repositories)
+     - `https://<username>.github.io/` (for user/organization pages)
+
+#### Manual Build and Test Locally
+
+To test the static export locally before deploying:
+
+```bash
+# Build the static site
+pnpm run export
+
+# The static files will be in the ./out directory
+# You can serve them with any static file server:
+npx serve out
+```
+
+#### Configuration for Subdirectory Deployment
+
+If your repository name is not `username.github.io`, you'll need to configure the base path:
+
+1. Open `next.config.ts`
+2. Uncomment and update the `basePath` line:
+   ```typescript
+   basePath: process.env.NODE_ENV === 'production' ? '/your-repo-name' : '',
+   trailingSlash: true,
+   ```
+
+### Other Deployment Options
 
 The application is also compatible with other platforms that support Next.js, such as:
 
+- [Vercel Platform](https://vercel.com/new) - Zero-config deployment
 - Netlify
 - AWS Amplify
 - Docker containers
